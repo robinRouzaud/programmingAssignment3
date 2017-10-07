@@ -22,7 +22,20 @@ best <- function(state, outcome){
       names(outcomeCol) <- outcomeNames
       stateOutcome <- stateDataFrame[, outcomeCol[outcome]]
       stateOutcome <- as.numeric(levels(stateOutcome))[stateOutcome]
-      min(stateOutcome, na.rm = TRUE)
+      lowest <- min(stateOutcome, na.rm = TRUE)
+      
+      # Convering factors to numerics
+      stateDataFrame[, outcomeCol[outcome]] <- as.numeric(levels(stateDataFrame[, outcomeCol[outcome]]))[stateDataFrame[, outcomeCol[outcome]]]
+      
+      # Testing tied values
+      selection <- stateDataFrame[, outcomeCol[outcome]] == lowest
+      tiesTest <- sum(selection, na.rm = TRUE)
+      selection[is.na(selection)] <- FALSE
+      selection
+      if(tiesTest == 1){
+            hospital <- as.character(levels(stateDataFrame[selection, 2]))[stateDataFrame[selection, 2]]
+            return(hospital)
+      }
 }
 
 
