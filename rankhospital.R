@@ -32,7 +32,8 @@ rankhospital <- function(state, outcome, num = "Best"){
       options(warn = oldWarning)
       
       # Ordered dataframe according to the outcome and NAs exclusion
-      oStateDataFrame <- stateDataFrame[order(stateDataFrame[outcomeCol[outcome]]), ]
+      oStateDataFrame <- stateDataFrame[order(stateDataFrame[outcomeCol[outcome]],
+                                              stateDataFrame["Hospital.Name"]), ]
       totAvail1 <- length(oStateDataFrame[, outcomeCol[outcome]])   # Amount of hospitals available in the state
       NAsXclusion <- is.na(oStateDataFrame[, outcomeCol[outcome]])
       oStateDataFrame <- oStateDataFrame[!NAsXclusion, ]
