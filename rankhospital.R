@@ -43,7 +43,7 @@ rankhospital <- function(state, outcome, num = "Best"){
       if(num == "Best"){
             result <- oStateDataFrame[1, "Hospital.Name"]
       }else if(num == "Worst"){
-            result <- oStateDataFrame[totAvail, "Hospital.Name"]
+            result <- oStateDataFrame[totAvail2, "Hospital.Name"]
       }else if(is.character(num)){
             stop("Invalid ranking")
       }else if(num > totAvail1){
@@ -56,11 +56,3 @@ rankhospital <- function(state, outcome, num = "Best"){
 
       print(result)      
 }
-
-
-
-
-
-
-
-
