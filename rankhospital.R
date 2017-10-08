@@ -1,4 +1,4 @@
-rankhospital <- function(state, outcome, num){
+rankhospital <- function(state, outcome, num = "Best"){
       oldWarning <- getOption("warn")
       # Opening the dataset for reading
       fichier <- "outcome-of-care-measures.csv"
@@ -25,11 +25,41 @@ rankhospital <- function(state, outcome, num){
       names(outcomeCol)  <- outcomeNames # Matches outcomeNames
       stateOutcome <- stateDataFrame[, outcomeCol[outcome]]
       
+      # Converting factors to numeric
       options(warn = -1)
       stateDataFrame[, outcomeCol[outcome]] <- as.numeric(levels(stateDataFrame[, outcomeCol[outcome]]))[stateDataFrame[, outcomeCol[outcome]]]
+      stateDataFrame[, "Hospital.Name"] <- as.character(levels(stateDataFrame[, "Hospital.Name"]))[stateDataFrame[, "Hospital.Name"]]
       options(warn = oldWarning)
       
+      # Ordered dataframe according to the outcome and NAs exclusion
       oStateDataFrame <- stateDataFrame[order(stateDataFrame[outcomeCol[outcome]]), ]
-      oStateDataFrame[num, outcomeCol[outcome]]
+      totAvail1 <- length(oStateDataFrame[, outcomeCol[outcome]])   # Amount of hospitals available in the state
+      NAsXclusion <- is.na(oStateDataFrame[, outcomeCol[outcome]])
+      oStateDataFrame <- oStateDataFrame[!NAsXclusion, ]
       
+      totAvail2 <- length(oStateDataFrame[, outcomeCol[outcome]])   # Amount of hospitals available with data in the state
+      
+      if(num == "Best"){
+            result <- oStateDataFrame[1, "Hospital.Name"]
+      }else if(num == "Worst"){
+            result <- oStateDataFrame[totAvail, "Hospital.Name"]
+      }else if(is.character(num)){
+            stop("Invalid ranking")
+      }else if(num > totAvail1){
+            return(NA)
+      }else if(num > totAvail2){
+            stop("No data provided by hospital")
+      }else{
+            result <- oStateDataFrame[num, "Hospital.Name"]
+      }
+
+      print(result)      
 }
+
+
+
+
+
+
+
+
